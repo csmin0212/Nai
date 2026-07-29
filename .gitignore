@@ -1,0 +1,10 @@
+# 키퍼 전용 파일 — 저장소에도 올리지 않는다.
+# (GitHub 연동으로 배포할 경우 .vercelignore 만으로는 막을 수 없기 때문)
+keeper.html
+data/keeper-notes.js
+
+.vercel/
+.claude/
+node_modules/
+.DS_Store
+Thumbs.db

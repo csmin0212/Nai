@@ -1,0 +1,66 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>니알라토텝의 가면들 · 핸드아웃 아카이브</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;800&family=Gowun+Batang:wght@400;700&family=Mrs+Saint+Delafield&family=Nanum+Myeongjo:wght@400;700;800&family=Nanum+Pen+Script&family=Special+Elite&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css?v=8">
+</head>
+<body>
+
+<div class="grain" aria-hidden="true"></div>
+
+<header class="masthead">
+  <div class="deco-rule top" aria-hidden="true"></div>
+  <div class="masthead-inner">
+    <div class="sunburst" aria-hidden="true"></div>
+    <p class="kicker">THE MASKS OF NYARLATHOTEP</p>
+    <h1>니알라토텝의 가면들</h1>
+    <p class="subkicker">핸드아웃 아카이브</p>
+  </div>
+  <div class="deco-rule bottom" aria-hidden="true"></div>
+</header>
+
+<nav class="tabs" id="tabs" aria-label="주요 보기">
+  <button class="tab is-active" data-view="archive">아카이브</button>
+  <button class="tab" data-view="timeline">연표</button>
+  <button class="tab" data-view="maps">지도</button>
+  <button class="tab" data-view="people">인물</button>
+  <button class="tab" data-view="library">엘리어스 장서</button>
+</nav>
+
+<div class="toolbar">
+  <div class="search-wrap">
+    <span class="search-icon" aria-hidden="true">&#9906;</span>
+    <input type="search" id="search" placeholder="자료 · 인물 · 지명 검색  (단축키 /)" autocomplete="off" aria-label="검색">
+  </div>
+  <div class="filters" id="filters"></div>
+</div>
+
+<main id="main">
+  <section id="view-archive" class="view"></section>
+  <section id="view-timeline" class="view" hidden></section>
+  <section id="view-maps" class="view" hidden></section>
+  <section id="view-people" class="view" hidden></section>
+  <section id="view-library" class="view" hidden></section>
+</main>
+
+<footer class="colophon">
+  <div class="deco-rule top" aria-hidden="true"></div>
+</footer>
+
+<div class="overlay" id="overlay" hidden>
+  <button class="modal-back" id="modal-back" aria-label="뒤로" hidden>&#8592;</button>
+  <button class="modal-close" id="modal-close" aria-label="닫기">&times;</button>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" tabindex="-1">
+    <div class="modal-body" id="modal-body"></div>
+  </div>
+</div>
+
+<script src="data/handouts.js?v=8"></script>
+<script src="assets/js/app.js?v=8"></script>
+</body>
+</html>

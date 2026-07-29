@@ -1,0 +1,11 @@
+# 키퍼 전용 파일 — 웹에 올리지 않는다.
+# 이 두 줄을 지우면 누구나 URL로 키퍼 메모를 열어볼 수 있게 되므로 건드리지 말 것.
+keeper.html
+data/keeper-notes.js
+
+# 개발용 파일
+.claude/
+.vercel/
+node_modules/
+README.md
+data/README.md
