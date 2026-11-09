@@ -22,7 +22,8 @@ window.MASKS_DATA = {
     { id: "letter",   label: "편지" },
     { id: "card",     label: "명함" },
     { id: "flyer",    label: "전단 · 포스터" },
-    { id: "matchbook",label: "성냥갑 · 물건" },
+    { id: "matchbook",label: "성냥갑" },
+    { id: "item",     label: "물건" },
     { id: "note",     label: "메모 · 수첩" },
     { id: "map",      label: "지도" },
     { id: "photo",    label: "사진" }
@@ -348,6 +349,42 @@ C는 그 꿈이 악몽이라고 생각하지 않지만, 그 꿈 때문에 잠을
 엘리어스 씨,
 
 문의하신 서적은 더 이상 저희 장서 중에 없습니다. 그러나 찾으시는 내용은 여기 있는 다른 책들에서 확인하실 수 있을 것 같습니다. 도착하신 후 연락 주시면 기꺼이 더 도와드리겠습니다.`
+    },
+
+    {
+      id: "us-20",
+      chapter: "us",
+      type: "item",
+      title: "헤로인 병",
+      source: "실물 (유리병)",
+      image: "images/us/us-20.png",
+      summary: "독일 바이엘 사의 '헤로인' 상표가 붙은 작은 유리 약병. 일행이 손에 넣었다.",
+      tags: ["물건", "마약", "헤로인"],
+      people: [],
+      places: [],
+      objectNote: "마개를 끼운 넓적한 유리 약병. 둥근 테두리 라벨에 큰 글씨로 \"Heroin\"이라고 적혀 있다.",
+      body: `FARBENFABRIKEN vorm.
+FRIEDR. BAYER & Co.
+ELBERFELD.
+
+**Heroin**
+
+Name geschützt · Nom déposé`
+    },
+
+    {
+      id: "us-21",
+      chapter: "us",
+      type: "item",
+      title: "보드카 병",
+      source: "실물 (술병)",
+      image: "images/us/us-21.png",
+      summary: "'VODKA' 라벨이 붙은 술병. 일행의 기억으로는 이 술을 마신 뒤 이상한 존재와 마주쳤다. 자세한 경위는 아직 기록하지 않았다.",
+      tags: ["물건", "술", "보드카"],
+      people: [],
+      places: [],
+      objectNote: "목이 긴 투명한 유리 술병. 몸통 라벨에 \"VODKA\"라고 적혀 있다.",
+      body: `**VODKA**`
     },
 
     {

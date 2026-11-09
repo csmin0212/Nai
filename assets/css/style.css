@@ -627,7 +627,33 @@ body.modal-open { overflow: hidden; }
 }
 .t-photo .body p { margin: 0 0 4px; }
 
-/* ---------- 성냥갑 · 물건 ---------- */
+/* ---------- 물건 (증거물 꼬리표) ---------- */
+.doc.t-item {
+  background: #f1ece1; padding: 26px 26px 22px; max-width: 420px; text-align: center;
+  background-image: radial-gradient(ellipse at 50% 35%, #fffdf8 0%, transparent 70%);
+}
+.item-shot {
+  margin: 0 auto 20px; height: 300px; display: flex; align-items: center; justify-content: center;
+}
+.item-shot img { max-height: 100%; max-width: 100%; object-fit: contain; mix-blend-mode: multiply; }
+.item-shot.is-missing { border: 1px dashed rgba(60,40,10,.35); }
+.item-shot.is-missing::after {
+  content: "실물 사진 없음"; font-size: 12.5px; letter-spacing: .3em; color: rgba(60,40,10,.55);
+}
+.t-item .body {
+  position: relative; display: inline-block; min-width: 62%;
+  font-family: var(--typewriter); font-size: 13.5px; line-height: 1.7; color: #3b2f1e;
+  background: #e9dcbc; border: 1px solid rgba(60,40,10,.35); padding: 14px 22px 12px 34px;
+  box-shadow: 0 2px 6px rgba(0,0,0,.12); transform: rotate(-1.2deg);
+}
+.t-item .body::before {           /* 꼬리표 끈 구멍 */
+  content: ""; position: absolute; left: 12px; top: 50%; width: 9px; height: 9px;
+  margin-top: -5px; border-radius: 50%; background: #f1ece1; border: 1px solid rgba(60,40,10,.45);
+}
+.t-item .body p { margin: 0 0 2px; }
+.t-item .body strong { font-size: 1.25em; letter-spacing: .04em; }
+
+/* ---------- 성냥갑 ---------- */
 .doc.t-matchbook {
   background: #e8481c; color: #1a0d06; text-align: center;
   padding: 46px 40px 0; max-width: 460px;
@@ -702,6 +728,7 @@ body.modal-open { overflow: hidden; }
   .doc.t-flyer { padding: 42px 28px 36px; }
   .doc.t-note { --margin: 30px; padding: calc(var(--rule) * 2) 18px var(--rule) 46px; font-size: 21px; }
   .doc.t-photo { padding: 12px 12px 16px; }
+  .item-shot { height: 240px; }
   .info-row { flex-direction: column; gap: 6px; }
 }
 

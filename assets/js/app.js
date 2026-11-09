@@ -9,7 +9,7 @@
 (function () {
   "use strict";
 
-  var APP_VERSION = "9";     /* index.html / keeper.html 의 ?v= 값과 맞춘다 */
+  var APP_VERSION = "10";     /* index.html / keeper.html 의 ?v= 값과 맞춘다 */
 
   var D = window.MASKS_DATA;
   if (!D) { document.getElementById("main").innerHTML = "<p class='empty'>data/handouts.js 를 불러오지 못했습니다.</p>"; return; }
@@ -333,7 +333,7 @@
      제목이 아카이브용 이름일 뿐이라 종이 위에 찍지 않는다. */
   var PRINTED_TITLE = { news: 1, card: 1, matchbook: 1, dossier: 1, map: 1 };
   /* 실물 크기가 작은 물건 — 창 가운데에 좁게 놓는다 */
-  var SMALL_OBJECT = { card: 1, flyer: 1, matchbook: 1, photo: 1 };
+  var SMALL_OBJECT = { card: 1, flyer: 1, matchbook: 1, photo: 1, item: 1 };
 
   /* 화면 구성: [캡션: 유형 · 제목 · 출처/날짜]  [실물]  [정보: 생김새 · 인물 · 지명 · 태그]
      인쇄할 때는 실물만 나간다. */
@@ -386,6 +386,11 @@
     if (h.type === "photo") {
       /* 사진은 인화지 틀을 항상 그린다. 원본 파일이 없으면 틀 안에 안내만 남는다. */
       parts.push("<figure class='photo-print" + (h.image ? "" : " is-missing") + "'>" +
+        (h.image ? "<img src='" + esc(h.image) + "' alt='" + esc(h.title) + "'>" : "") +
+        "</figure>");
+    } else if (h.type === "item") {
+      /* 물건은 사진을 자르지 않고 통째로 보여 준다. 아래 body 는 라벨 문구. */
+      parts.push("<figure class='item-shot" + (h.image ? "" : " is-missing") + "'>" +
         (h.image ? "<img src='" + esc(h.image) + "' alt='" + esc(h.title) + "'>" : "") +
         "</figure>");
     } else if (h.image) {
@@ -500,11 +505,11 @@
 
     /* 이미지가 없으면 자리를 지운다 (사진은 틀만 남기고 '원본 없음' 표시).
        캐시된 404 는 리스너를 달기 전에 이미 실패해 있을 수 있어서 complete 도 확인한다. */
-    body.querySelectorAll(".doc-figure img, .photo-print img").forEach(function (img) {
+    body.querySelectorAll(".doc-figure img, .photo-print img, .item-shot img").forEach(function (img) {
       function fail() {
         var fig = img.parentNode;
         if (!fig) return;
-        if (fig.classList.contains("photo-print")) { fig.classList.add("is-missing"); img.remove(); }
+        if (fig.classList.contains("photo-print") || fig.classList.contains("item-shot")) { fig.classList.add("is-missing"); img.remove(); }
         else fig.remove();
       }
       if (img.complete && !img.naturalWidth) fail();

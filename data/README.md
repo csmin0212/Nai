@@ -14,7 +14,7 @@
 {
   id: "us-09",                  // 고유 ID. "챕터-번호" 규칙. 주소창 #us-09 로 바로 열 수 있음
   chapter: "us",                // chapters 배열의 id 중 하나
-  type: "news",                 // news | telegram | dossier | letter | card | flyer | matchbook | note | photo | map
+  type: "news",                 // news | telegram | dossier | letter | card | flyer | matchbook | item | note | photo | map
   title: "자료 제목",            // 목록·검색용 제목
   headline: "지면에 인쇄된 제목", // (선택) 신문 헤드라인. 없으면 title 사용
   source: "런던 타임스",         // (선택) 출처
@@ -50,6 +50,7 @@
 | `letter` | 편지지 — 오른쪽 위 발신지/날짜, 파란 잉크, 손글씨 서명 |
 | `card` | 명함 — 실제 명함 비율, 겹테두리, 제목 = 상호. 뒷면 손글씨는 `back` 으로 (뒷면 카드가 따로 그려짐) |
 | `flyer` | 전단 · 포스터 — 둥근 겹테두리, 가운데 정렬. 글자 크기는 아래 "전단 표기법" 참고 |
+| `item` | 물건 — 실물 사진을 자르지 않고 보여 주고, `body` 는 꼬리표에 라벨 문구를 적는다. 사진이 없으면 "실물 사진 없음" |
 | `matchbook` | 성냥갑 — 주황 표지, 흰 띠에 문구, 갈색 점화면. `motto` 로 띠 문구 지정 |
 | `map` | 지도 — **'지도' 탭에 따로 실립니다.** 아카이브·연표에는 나오지 않습니다 |
 | `note` | 노란 괘선 노트 — 손글씨체, 붉은 여백선. `**굵게**` 쓴 부분은 붉은 펜 |
