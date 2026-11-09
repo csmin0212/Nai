@@ -9,7 +9,7 @@
 (function () {
   "use strict";
 
-  var APP_VERSION = "8";     /* index.html / keeper.html 의 ?v= 값과 맞춘다 */
+  var APP_VERSION = "9";     /* index.html / keeper.html 의 ?v= 값과 맞춘다 */
 
   var D = window.MASKS_DATA;
   if (!D) { document.getElementById("main").innerHTML = "<p class='empty'>data/handouts.js 를 불러오지 못했습니다.</p>"; return; }
@@ -35,15 +35,18 @@
       .replace(/"/g, "&quot;");
   }
 
-  /* 아주 작은 마크다운: ### 소제목 / - 목록 / **강조** / 빈 줄 = 문단 */
+  /* 아주 작은 마크다운: ### 소제목 / - 목록 / **강조** / *기울임* / 빈 줄 = 문단
+     전단처럼 글자 크기가 다른 인쇄물은 # (가장 큼) · ## (큼) 을 쓴다. */
+  var HEAD_CLASS = { 1: " class='md-xl'", 2: " class='md-lg'", 3: "" };
   function fmt(text) {
     var blocks = String(text || "").trim().split(/\n{2,}/);
     return blocks.map(function (block) {
       var lines = block.split("\n");
-      if (/^###\s/.test(lines[0])) {
-        var h = inline(lines[0].replace(/^###\s*/, ""));
+      var m = /^(#{1,3})\s+/.exec(lines[0]);
+      if (m) {
+        var h = inline(lines[0].slice(m[0].length));
         var rest = lines.slice(1).join("\n").trim();
-        return "<h3>" + h + "</h3>" + (rest ? fmt(rest) : "");
+        return "<h3" + HEAD_CLASS[m[1].length] + ">" + h + "</h3>" + (rest ? fmt(rest) : "");
       }
       if (/^-\s/.test(lines[0])) {
         return "<ul>" + lines.filter(Boolean).map(function (l) {
@@ -55,7 +58,9 @@
   }
 
   function inline(s) {
-    return esc(s).replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
+    return esc(s)
+      .replace(/\*\*([\s\S]+?)\*\*/g, "<strong>$1</strong>")
+      .replace(/\*([^*\n][^*]*?)\*/g, "<em>$1</em>");
   }
 
   function typeLabel(id) {
@@ -170,11 +175,15 @@
     return "<article class='card" + secret + "' data-open='" + esc(h.id) + "' tabindex='0'>" +
       "<div class='card-tag'>" + esc(typeLabel(h.type)) + "</div>" +
       "<h3>" + esc(h.headline || h.title) + "</h3>" +
-      "<div class='meta'>" + esc(h.dateLabel || h.date || "") +
-        (h.source ? " · " + esc(h.source) : "") + "</div>" +
+      "<div class='meta'>" + metaLine(h) + "</div>" +
       "<p class='excerpt'>" + esc(h.summary || "") + "</p>" +
       "<div class='foot'>" + tags + "</div>" +
       "</article>";
+  }
+
+  /* "날짜 · 출처" — 빈 칸은 건너뛴다 (예전엔 날짜 없는 자료가 "· 명함" 처럼 나왔다) */
+  function metaLine(h) {
+    return [h.dateLabel || h.date, h.source].filter(Boolean).map(esc).join(" · ");
   }
 
   function emptyMsg() {
@@ -320,11 +329,28 @@
 
   /* ---------------- 상세 문서 ---------------- */
 
-  function docHtml(h, inline) {
-    var cls = "doc " + h.type;
+  /* 실물에 제목이 인쇄돼 있는 유형. 나머지(편지·전보·메모·사진·전단)는
+     제목이 아카이브용 이름일 뿐이라 종이 위에 찍지 않는다. */
+  var PRINTED_TITLE = { news: 1, card: 1, matchbook: 1, dossier: 1, map: 1 };
+  /* 실물 크기가 작은 물건 — 창 가운데에 좁게 놓는다 */
+  var SMALL_OBJECT = { card: 1, flyer: 1, matchbook: 1, photo: 1 };
+
+  /* 화면 구성: [캡션: 유형 · 제목 · 출처/날짜]  [실물]  [정보: 생김새 · 인물 · 지명 · 태그]
+     인쇄할 때는 실물만 나간다. */
+  function docHtml(h) {
     var parts = [];
 
-    parts.push("<div class='" + cls + "' id='doc-print'>");
+    parts.push("<header class='doc-cap'>" +
+      "<span class='cap-type'>" + esc(typeLabel(h.type)) + "</span>" +
+      "<h2 class='cap-title' id='modal-title'>" + esc(h.title) + "</h2>" +
+      (metaLine(h) ? "<p class='cap-meta'>" + metaLine(h) + "</p>" : "") +
+      "</header>");
+
+    /* 유형 클래스에 t- 를 붙인다. 'card' 를 그대로 쓰면 목록 카드(.card)의
+       장식과 hover 효과가 핸드아웃 창에 섞여 들어간다. */
+    parts.push("<div class='doc t-" + esc(h.type) + (SMALL_OBJECT[h.type] ? " is-small" : "") +
+      "' id='doc-print'>");
+    if (h.back) parts.push("<span class='side-lbl'>앞면</span>");
     if (h.stamp) parts.push("<div class='stamp'>" + esc(h.stamp) + "</div>");
 
     if (h.type === "telegram") {
@@ -346,8 +372,9 @@
         "<span>" + esc(h.letterMeta.when || h.dateLabel || "") + "</span></div>");
     }
 
-    parts.push("<h2" + (inline ? "" : " id='modal-title'") + ">" +
-      esc(h.headline || h.title) + "</h2>");
+    if (PRINTED_TITLE[h.type]) {
+      parts.push("<h2 class='doc-title'>" + esc(h.headline || h.title) + "</h2>");
+    }
 
     if (h.subheads) {
       parts.push("<div class='news-subheads'>" + h.subheads.map(function (s) {
@@ -355,11 +382,13 @@
       }).join("") + "</div>");
     }
     if (h.byline) parts.push("<p class='news-byline'>" + esc(h.byline) + "</p>");
-    parts.push("<div class='doc-meta'>" + esc(typeLabel(h.type)) +
-      (h.source ? " · " + esc(h.source) : "") +
-      (h.dateLabel ? " · " + esc(h.dateLabel) : "") + "</div>");
 
-    if (h.image) {
+    if (h.type === "photo") {
+      /* 사진은 인화지 틀을 항상 그린다. 원본 파일이 없으면 틀 안에 안내만 남는다. */
+      parts.push("<figure class='photo-print" + (h.image ? "" : " is-missing") + "'>" +
+        (h.image ? "<img src='" + esc(h.image) + "' alt='" + esc(h.title) + "'>" : "") +
+        "</figure>");
+    } else if (h.image) {
       parts.push("<figure class='doc-figure'>" +
         "<img src='" + esc(h.image) + "' alt='" + esc(h.title) + "'>" +
         "</figure>");
@@ -379,7 +408,6 @@
     }
 
     if (h.motto) parts.push("<div class='mb-band'><span>&ldquo;" + esc(h.motto) + "&rdquo;</span></div>");
-    if (h.objectNote) parts.push("<p class='obj-note'>" + esc(h.objectNote) + "</p>");
 
     if (h.legendGroups) {
       parts.push("<div class='map-legend'>" + h.legendGroups.map(function (g) {
@@ -390,27 +418,39 @@
           }).join("") + "</ul></div>";
       }).join("") + "</div>");
     }
+    parts.push("</div>");                                   /* 실물 끝 */
+
+    /* 뒷면에 손으로 적힌 것 (명함 등) */
+    if (h.back) {
+      parts.push("<div class='doc t-" + esc(h.type) + " card-back" +
+        (SMALL_OBJECT[h.type] ? " is-small" : "") + "'>" +
+        "<span class='side-lbl'>뒷면</span>" +
+        "<p class='back-hand'>" + esc(h.back) + "</p></div>");
+    }
 
     var rows = "";
+    if (h.objectNote) {
+      rows += "<div class='info-row note'><span class='lbl'>생김새</span>" +
+        "<p class='obj-note'>" + esc(h.objectNote) + "</p></div>";
+    }
     var whom = (h.people || []).filter(personByName);
     if (whom.length) {
-      rows += "<div class='foot-row'><span class='lbl'>인물</span>" + whom.map(function (n) {
+      rows += "<div class='info-row'><span class='lbl'>인물</span><div class='chips'>" + whom.map(function (n) {
         return "<button class='linkchip' data-person='" + esc(n) + "'>" + esc(n) + "</button>";
-      }).join("") + "</div>";
+      }).join("") + "</div></div>";
     }
     if ((h.places || []).length) {
-      rows += "<div class='foot-row'><span class='lbl'>지명</span>" + h.places.map(function (p) {
+      rows += "<div class='info-row'><span class='lbl'>지명</span><div class='chips'>" + h.places.map(function (p) {
         return "<button class='linkchip place' data-place='" + esc(p) + "'>" + esc(p) + "</button>";
-      }).join("") + "</div>";
+      }).join("") + "</div></div>";
     }
     if ((h.tags || []).length) {
-      rows += "<div class='foot-row'><span class='lbl'>태그</span>" + h.tags.map(function (t) {
+      rows += "<div class='info-row'><span class='lbl'>태그</span><div class='chips'>" + h.tags.map(function (t) {
         return "<span class='tagpill'>" + esc(t) + "</span>";
-      }).join("") + "</div>";
+      }).join("") + "</div></div>";
     }
-    parts.push("<div class='doc-foot'>" + rows +
-      "<div class='foot-row end'><button class='btn-print'>인쇄 / PDF</button></div></div>");
-    parts.push("</div>");
+    parts.push("<section class='doc-info'>" + rows +
+      "<div class='info-actions'><button class='btn-print'>인쇄 / PDF</button></div></section>");
 
     if (state.keeper && keeperNote(h.id)) {
       parts.push("<div class='keeper-box'><span class='lbl'>KEEPER ONLY</span>" + fmt(keeperNote(h.id)) + "</div>");
@@ -458,10 +498,17 @@
 
     body.innerHTML = html;
 
-    body.querySelectorAll(".doc-figure img").forEach(function (img) {
-      img.addEventListener("error", function () {
-        if (img.parentNode) img.parentNode.remove();        /* 이미지가 없으면 자리를 지운다 */
-      });
+    /* 이미지가 없으면 자리를 지운다 (사진은 틀만 남기고 '원본 없음' 표시).
+       캐시된 404 는 리스너를 달기 전에 이미 실패해 있을 수 있어서 complete 도 확인한다. */
+    body.querySelectorAll(".doc-figure img, .photo-print img").forEach(function (img) {
+      function fail() {
+        var fig = img.parentNode;
+        if (!fig) return;
+        if (fig.classList.contains("photo-print")) { fig.classList.add("is-missing"); img.remove(); }
+        else fig.remove();
+      }
+      if (img.complete && !img.naturalWidth) fail();
+      else img.addEventListener("error", fail);
     });
 
     if (back) back.hidden = trail.length < 2;
@@ -473,7 +520,7 @@
       document.body.classList.add("modal-open", "print-doc");
     }
     ov.scrollTop = 0;
-    ov.querySelector(".modal").focus();
+    ov.querySelector(".modal").focus({ preventScroll: true });
     setHash(cur);
   }
 

@@ -309,7 +309,7 @@ body.modal-open { overflow: hidden; }
    가로챈다. 그래서 닫기 버튼은 .modal 밖(.overlay 직속)에 두고,
    흐림 효과는 쓰지 않는다. */
 .overlay {
-  position: fixed; inset: 0; z-index: 50; background: rgba(6,5,4,.92);
+  position: fixed; inset: 0; z-index: 50; background: #090806;
   display: flex; align-items: flex-start;
   justify-content: center; overflow-y: auto; padding: 40px 18px;
   animation: fade .18s ease;
@@ -344,6 +344,28 @@ body.modal-open { overflow: hidden; }
   .modal-back { top: 10px; right: 56px; width: 38px; height: 38px; font-size: 20px; }
 }
 
+/* ============================================================
+   핸드아웃 창 = [캡션] + [실물] + [정보]
+   실물(.doc)에는 종이에 실제로 적힌 것만 둔다. 유형 클래스는 t-<type>.
+   ============================================================ */
+
+/* ---------- 캡션: 유형 · 제목 · 출처/날짜 ---------- */
+.doc-cap { text-align: center; margin: 2px 0 22px; padding: 0 56px; }
+.cap-type {
+  display: block; font-family: var(--display); font-size: 11px;
+  letter-spacing: .32em; text-indent: .32em; color: var(--gold);
+}
+.cap-title {
+  font-family: var(--myeongjo); font-weight: 800; font-size: clamp(20px, 3.2vw, 26px);
+  line-height: 1.4; margin: 6px 0 4px; color: var(--paper-warm); letter-spacing: .02em;
+}
+.cap-meta { margin: 0; font-size: 13px; color: var(--text-dim); letter-spacing: .04em; }
+.doc-cap::after {
+  content: ""; display: block; width: 180px; height: 9px; margin: 14px auto 0; opacity: .8;
+  background: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='9'%3E%3Cpath d='M0 4.5H78M102 4.5H180' stroke='%23a8862a'/%3E%3Cpath d='M90 .5l4 4-4 4-4-4z' fill='%23c9a227'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+/* ---------- 실물 공통 ---------- */
 .doc {
   background: var(--paper); color: #241d13; box-shadow: var(--shadow);
   padding: 42px 48px 40px; position: relative;
@@ -351,40 +373,52 @@ body.modal-open { overflow: hidden; }
     radial-gradient(ellipse at 12% 8%, rgba(120,90,40,.13), transparent 45%),
     radial-gradient(ellipse at 88% 92%, rgba(120,90,40,.16), transparent 45%);
 }
+.doc.is-small { max-width: 600px; margin-left: auto; margin-right: auto; }
+.doc + .doc { margin-top: 18px; }
 .doc h2 { font-family: var(--myeongjo); font-weight: 800; margin: 0 0 6px; }
-.doc .doc-meta {
-  font-size: 12px; color: #6d5c40; letter-spacing: .08em; margin-bottom: 20px;
-  border-bottom: 1px solid rgba(60,40,10,.25); padding-bottom: 12px;
-}
 .doc p { margin: 0 0 13px; }
 .doc h3 { font-family: var(--myeongjo); font-size: 16px; margin: 22px 0 8px; color: #3d2f1c; }
 .doc ul { margin: 0 0 14px; padding-left: 20px; }
 .doc li { margin-bottom: 7px; }
 .doc strong { font-weight: 700; }
 
-/* 문서 유형별 스킨 — 신문 */
-.doc.news {
+.doc .stamp {
+  position: absolute; top: 22px; right: 26px; transform: rotate(-11deg);
+  border: 3px double var(--oxblood); color: var(--oxblood); opacity: .55;
+  font-family: var(--display); font-size: 13px; letter-spacing: .18em;
+  padding: 5px 12px; pointer-events: none;
+}
+.doc-figure { margin: 0 0 22px; }
+.doc-figure img { width: 100%; display: block; border: 1px solid rgba(60,40,10,.3); }
+
+/* 앞면/뒷면 표시 (명함처럼 양면이 있을 때) */
+.side-lbl {
+  position: absolute; top: 20px; left: 24px; z-index: 2;
+  font-size: 10.5px; letter-spacing: .3em; color: rgba(60,40,10,.45);
+}
+
+/* ---------- 신문 ---------- */
+.doc.t-news {
   background: var(--news); font-family: var(--myeongjo);
   background-image: repeating-linear-gradient(0deg, rgba(0,0,0,.02) 0 1px, transparent 1px 4px);
 }
-.doc.news .paper-name {
+.t-news .paper-name {
   font-family: var(--myeongjo); font-size: 11px; letter-spacing: .1em; color: #5b4c34;
   border-bottom: 2px solid #241d13; padding-bottom: 5px; margin-bottom: 14px;
-  display: flex; justify-content: space-between;
+  display: flex; justify-content: space-between; gap: 12px;
 }
-.doc.news h2 {
+.t-news .doc-title {
   font-size: clamp(26px, 4.4vw, 40px); text-align: center; line-height: 1.25;
   letter-spacing: -.01em; border-bottom: 3px double #241d13; padding-bottom: 14px;
   margin-bottom: 18px;
 }
-.doc.news .doc-meta { display: none; }
 .news-subheads { text-align: center; margin: -6px 0 14px; }
 .news-subheads p {
   margin: 0; font-family: var(--myeongjo); font-weight: 700;
   font-size: clamp(16px, 2.6vw, 21px); color: #241d13; padding: 12px 0;
   position: relative;
 }
-.news-subheads p::before {
+.news-subheads p::before, .news-byline::before {
   content: ""; position: absolute; top: 0; left: 50%; transform: translateX(-50%);
   width: 54px; border-top: 2px solid #241d13;
 }
@@ -392,68 +426,60 @@ body.modal-open { overflow: hidden; }
   text-align: center; font-family: var(--myeongjo); font-size: 14px;
   color: #3d2f1c; margin: 0 0 16px; padding-top: 12px; position: relative;
 }
-.news-byline::before {
-  content: ""; position: absolute; top: 0; left: 50%; transform: translateX(-50%);
-  width: 54px; border-top: 2px solid #241d13;
-}
-.doc.news .body { column-gap: 32px; column-rule: 1px solid rgba(36,29,19,.28); text-align: justify; }
-@media (min-width: 700px) { .doc.news .body { column-count: 2; } }
-.doc.news .body p:first-child::first-letter {
+.t-news .body { column-gap: 32px; column-rule: 1px solid rgba(36,29,19,.28); text-align: justify; }
+@media (min-width: 700px) { .t-news .body { column-count: 2; } }
+.t-news .body p:first-child::first-letter {
   float: left; font-size: 46px; line-height: .82; padding: 4px 8px 0 0; font-weight: 800;
 }
 
-/* 전보 */
-.doc.telegram {
+/* ---------- 전보 ---------- */
+.doc.t-telegram {
   background: #e5dcc4; font-family: var(--typewriter);
   border: 1px solid #b6a887;
 }
-.doc.telegram .tg-head {
-  border-bottom: 2px solid #2b2418; padding-bottom: 10px; margin-bottom: 8px;
-}
-.doc.telegram .tg-brand {
+.t-telegram .tg-head { border-bottom: 2px solid #2b2418; padding-bottom: 10px; margin-bottom: 8px; }
+.t-telegram .tg-brand {
   font-family: var(--display); font-weight: 800; font-size: clamp(18px, 3.4vw, 27px);
   letter-spacing: .04em; margin: 0; color: #241d13;
 }
-.doc.telegram .tg-fine { font-size: 9.5px; letter-spacing: .02em; color: #4b3f2b; margin: 0 0 6px; }
-.doc.telegram .tg-boxes { display: flex; gap: 0; margin: 8px 0 0; font-size: 10px; }
-.doc.telegram .tg-boxes span {
+.t-telegram .tg-fine { font-size: 9.5px; letter-spacing: .02em; color: #4b3f2b; margin: 0 0 6px; }
+.t-telegram .tg-boxes { display: flex; margin: 8px 0 0; font-size: 10px; }
+.t-telegram .tg-boxes span {
   flex: 1; border: 1px solid #5d5140; padding: 3px 6px; color: #4b3f2b; text-align: center;
 }
-.doc.telegram h2 { display: none; }
-.doc.telegram .doc-meta { font-family: var(--typewriter); font-size: 11px; }
-.doc.telegram .body {
+.t-telegram .body {
   font-family: var(--hand); font-size: 25px; line-height: 2.1; color: #2f2a3d;
   padding: 18px 6px 6px; letter-spacing: .01em;
 }
-.doc.telegram .body p { margin: 0 0 6px; }
+.t-telegram .body p { margin: 0 0 6px; }
 
-/* 서류철 / 인물 정보 */
-.doc.dossier { background: var(--paper-warm); }
-.doc.dossier::before {
+/* ---------- 서류철 / 인물 정보 ---------- */
+.doc.t-dossier { background: var(--paper-warm); }
+.doc.t-dossier::before {
   content: ""; position: absolute; inset: 12px; border: 1px solid rgba(60,40,10,.28);
   pointer-events: none;
 }
-.doc.dossier h2 { font-size: 26px; text-align: center; }
-.doc.dossier .doc-meta { text-align: center; }
+.t-dossier .doc-title {
+  font-size: 26px; text-align: center; line-height: 1.4;
+  padding-bottom: 16px; margin-bottom: 22px; border-bottom: 1px solid rgba(60,40,10,.3);
+}
 
-/* 지도 */
-.doc.map {
+/* ---------- 지도 ---------- */
+.doc.t-map {
   background: #e2d6b4;
   background-image:
     radial-gradient(ellipse at 30% 20%, rgba(120,90,40,.14), transparent 55%),
     repeating-linear-gradient(90deg, rgba(60,40,10,.045) 0 1px, transparent 1px 34px),
     repeating-linear-gradient(0deg,  rgba(60,40,10,.045) 0 1px, transparent 1px 34px);
 }
-.doc.map::before {
+.doc.t-map::before {
   content: ""; position: absolute; inset: 10px;
   border: 3px double rgba(60,40,10,.45); pointer-events: none;
 }
-.doc.map h2 {
+.t-map .doc-title {
   text-align: center; font-size: clamp(24px, 4vw, 34px); letter-spacing: .04em;
-  border-bottom: 1px solid rgba(60,40,10,.35); padding-bottom: 12px;
+  border-bottom: 1px solid rgba(60,40,10,.35); padding-bottom: 12px; margin-bottom: 20px;
 }
-.doc.map .doc-meta { text-align: center; }
-
 .map-legend { margin-top: 26px; }
 .legend-group + .legend-group { margin-top: 24px; }
 .legend-group h3 {
@@ -472,89 +498,156 @@ body.modal-open { overflow: hidden; }
 }
 .legend-list .nm { color: #2f2517; }
 
-/* 편지 */
-.doc.letter {
+/* ---------- 편지 ---------- */
+.doc.t-letter {
   background: #efe9d8; font-family: var(--serif-ko);
   background-image:
     linear-gradient(105deg, transparent 48%, rgba(90,70,30,.07) 49.6%, transparent 51%),
     radial-gradient(ellipse at 80% 15%, rgba(120,90,40,.10), transparent 50%);
 }
-.doc.letter h2 { display: none; }
-.doc.letter .doc-meta {
-  border: none; text-align: right; padding-bottom: 0; margin-bottom: 26px;
-}
-.doc.letter .lt-head {
+.t-letter .lt-head {
   text-align: right; font-size: 15px; color: #2f3a5c; line-height: 1.6;
-  margin-bottom: 30px; letter-spacing: .02em;
+  margin-bottom: 30px; letter-spacing: .02em; min-height: 1em;
 }
-.doc.letter .lt-head span { display: block; }
-.doc.letter .lt-to { color: #2f3a5c; font-size: 16px; margin: 0 0 22px; }
-.doc.letter .body { line-height: 2.1; color: #2f3a5c; text-indent: 1em; }
-.doc.letter .body p { margin-bottom: 4px; }
-.doc.letter .lt-sign { margin-top: 32px; color: #2f3a5c; }
-.doc.letter .lt-from { margin: 0 0 2px; font-size: 15px; }
-.doc.letter .lt-scrawl {
-  margin: 0; font-family: 'Mrs Saint Delafield', cursive; font-size: 40px;
+.t-letter .lt-head span { display: block; }
+.t-letter .lt-to { color: #2f3a5c; font-size: 16px; margin: 0 0 22px; }
+.t-letter .body { line-height: 2.05; color: #2f3a5c; }
+.t-letter .body p { margin: 0 0 16px; }
+.t-letter .lt-sign { margin-top: 32px; color: #2f3a5c; }
+.t-letter .lt-from { margin: 0 0 2px; font-size: 15px; }
+.t-letter .lt-scrawl {
+  margin: 0; font-family: 'Mrs Saint Delafield', var(--hand); font-size: 40px;
   line-height: 1.1; color: #2b3a6b;
 }
 
-.doc.note { background: #e7dcc0; font-family: var(--typewriter); font-size: 14.5px; }
+/* ---------- 메모 · 수첩: 노란 괘선 노트 ---------- */
+.doc.t-note {
+  --rule: 32px; --margin: 60px;
+  background-color: #f3e6a1; color: #2a2833;
+  background-image:
+    linear-gradient(90deg,
+      transparent var(--margin), rgba(196,72,60,.55) var(--margin),
+      rgba(196,72,60,.55) calc(var(--margin) + 1px), transparent calc(var(--margin) + 1px),
+      transparent calc(var(--margin) + 4px), rgba(196,72,60,.35) calc(var(--margin) + 4px),
+      rgba(196,72,60,.35) calc(var(--margin) + 5px), transparent calc(var(--margin) + 5px)),
+    repeating-linear-gradient(180deg,
+      transparent 0 calc(var(--rule) - 1px), rgba(80,118,170,.4) calc(var(--rule) - 1px) var(--rule)),
+    radial-gradient(ellipse at 85% 10%, rgba(255,255,255,.35), transparent 50%);
+  padding: calc(var(--rule) * 2) 44px var(--rule) calc(var(--margin) + 28px);
+  font-family: var(--hand); font-size: 23px; line-height: var(--rule);
+}
+.t-note .body p { margin: 0 0 var(--rule); }
+.t-note .body p:last-child { margin-bottom: 0; }
+.t-note .body strong { font-weight: 400; color: #8a2a20; }   /* 날짜 같은 머리 줄은 붉은 펜 */
+.t-note .body h3 { font-family: var(--hand); font-size: 26px; line-height: var(--rule); margin: 0 0 var(--rule); color: #8a2a20; }
 
-/* 명함 · 인쇄물 */
-.doc.card {
-  background: #f4efe0; text-align: center; padding: 56px 92px 52px;
-  background-image: radial-gradient(ellipse at 50% 40%, rgba(255,255,255,.5), transparent 70%);
+/* ---------- 명함 ---------- */
+.doc.t-card {
+  background: #f6f1e3; text-align: center; color: #221b12;
+  aspect-ratio: 1.75 / 1; display: flex; flex-direction: column; justify-content: center;
+  padding: 46px 64px;
+  background-image: radial-gradient(ellipse at 50% 35%, rgba(255,255,255,.7), transparent 70%);
 }
-.doc.card::before {
-  content: ""; position: absolute; inset: 14px;
-  border: 1px solid rgba(60,40,10,.55); box-shadow: inset 0 0 0 4px rgba(244,239,224,1), inset 0 0 0 5px rgba(60,40,10,.3);
-  pointer-events: none;
+.doc.t-card::before, .doc.t-card::after {
+  content: ""; position: absolute; pointer-events: none;
 }
-.doc.card::after {
-  content: ""; position: absolute; left: 26px; right: 26px; top: 50%; height: 260px;
-  transform: translateY(-50%); pointer-events: none; opacity: .95;
-  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 220'%3E%3Cg fill='none' stroke='%23a8752a' stroke-width='2.4' stroke-linecap='round'%3E%3Cpath d='M34 214 C34 168 16 148 18 112 C20 74 44 64 44 40 C44 24 32 16 24 22 C16 28 18 40 28 42'/%3E%3Cpath d='M40 214 C42 166 28 144 30 110 C32 76 54 66 56 44'/%3E%3Cpath d='M28 208 C24 170 8 152 6 122 C5 104 14 92 24 96'/%3E%3Cpath d='M22 118 C14 108 16 96 26 96'/%3E%3C/g%3E%3C/svg%3E"),
-    url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 220'%3E%3Cg fill='none' stroke='%23c9a227' stroke-width='2.4' stroke-linecap='round'%3E%3Cpath d='M34 214 C34 168 16 148 18 112 C20 74 44 64 44 40 C44 24 32 16 24 22 C16 28 18 40 28 42'/%3E%3Cpath d='M40 214 C42 166 28 144 30 110 C32 76 54 66 56 44'/%3E%3Cpath d='M28 208 C24 170 8 152 6 122 C5 104 14 92 24 96'/%3E%3Cpath d='M22 118 C14 108 16 96 26 96'/%3E%3C/g%3E%3C/svg%3E");
-  background-repeat: no-repeat, no-repeat;
-  background-position: left center, right center;
-  background-size: auto 100%, auto 100%;
+.doc.t-card::before { inset: 12px; border: 1px solid rgba(60,40,10,.5); }
+.doc.t-card::after  { inset: 16px; border: 1px solid rgba(60,40,10,.2); }
+.t-card .doc-title {
+  font-size: clamp(26px, 4.6vw, 36px); letter-spacing: .14em; text-indent: .14em;
+  margin: 0 0 18px; line-height: 1.3;
 }
-.doc.card > * { position: relative; z-index: 1; }
-.doc.card h2 {
-  font-size: clamp(30px, 5.5vw, 46px); letter-spacing: .12em; margin: 0 0 26px;
+.t-card .doc-title::after {
+  content: ""; display: block; width: 150px; height: 9px; margin: 14px auto 0;
+  background: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='9'%3E%3Cpath d='M0 4.5H64M86 4.5H150' stroke='%23a8752a'/%3E%3Cpath d='M75 .5l4 4-4 4-4-4z' fill='%23a8752a'/%3E%3C/svg%3E") center / contain no-repeat;
 }
-.doc.card .doc-meta { display: none; }
-.doc.card .body { font-size: 17px; line-height: 1.9; letter-spacing: .04em; }
-.doc.card .body p:last-child { margin-top: 26px; font-size: 18px; }
-.doc.card .doc-foot { text-align: left; justify-content: flex-start; }
+.t-card .body { font-size: 15.5px; line-height: 1.8; letter-spacing: .04em; }
+.t-card .body p { margin: 0 0 10px; }
+.t-card .body p:last-child { margin: 14px 0 0; }
 
-@media (max-width: 640px) {
-  .doc.card { padding: 40px 30px; }
-  .doc.card::after { display: none; }
+/* 명함 뒷면 — 손글씨 */
+.doc.t-card.card-back { background-image: none; background-color: #f3eddd; }
+.card-back .back-hand {
+  margin: 0; font-family: var(--hand); font-size: clamp(32px, 6vw, 44px);
+  color: #4a3a92; transform: rotate(-9deg); letter-spacing: .02em;
 }
 
-/* 성냥갑 · 물건 */
-.doc.matchbook {
+/* ---------- 전단 · 포스터 ---------- */
+.doc.t-flyer {
+  background: #eee1b6; color: #1d170f; text-align: center;
+  padding: 50px 52px 46px; font-family: var(--myeongjo);
+  background-image:
+    radial-gradient(ellipse at 50% 30%, rgba(255,255,255,.4), transparent 65%),
+    radial-gradient(ellipse at 92% 100%, rgba(120,90,40,.2), transparent 50%),
+    radial-gradient(ellipse at 6% 4%, rgba(120,90,40,.14), transparent 40%);
+}
+.doc.t-flyer::before, .doc.t-flyer::after {
+  content: ""; position: absolute; pointer-events: none;
+}
+.doc.t-flyer::before { inset: 14px; border: 2px solid #2a2218; border-radius: 26px; }
+.doc.t-flyer::after  { inset: 20px; border: 1px solid rgba(42,34,24,.55); border-radius: 20px; }
+.doc.t-flyer h3 {
+  font-family: var(--myeongjo); font-weight: 800; color: #1d170f;
+  font-size: clamp(30px, 6vw, 44px); letter-spacing: .1em; text-indent: .1em;
+  line-height: 1.2; margin: 6px 0 26px;
+}
+.doc.t-flyer h3:last-child { margin: 30px 0 4px; }
+.doc.t-flyer h3.md-lg {
+  font-size: clamp(20px, 3.6vw, 27px); letter-spacing: .02em; text-indent: 0;
+  line-height: 1.35; margin: 0 0 2px;
+}
+.doc.t-flyer h3.md-xl {
+  font-size: clamp(36px, 7.4vw, 56px); letter-spacing: .04em; text-indent: .04em;
+  line-height: 1.15; margin: 0 0 26px;
+}
+.t-flyer .body p { margin: 0 0 20px; font-size: 16.5px; line-height: 1.75; }
+.t-flyer .body em { font-style: italic; font-size: 17.5px; }
+
+/* ---------- 사진 ---------- */
+.doc.t-photo {
+  background: #ece4d2; padding: 18px 18px 20px;
+  background-image: radial-gradient(ellipse at 20% 0%, rgba(255,255,255,.4), transparent 60%);
+}
+.photo-print {
+  margin: 0; aspect-ratio: 4 / 3; background: #2a2219; overflow: hidden;
+  box-shadow: inset 0 0 40px rgba(0,0,0,.55);
+}
+.photo-print img { width: 100%; height: 100%; object-fit: cover; display: block; filter: sepia(.35); }
+.photo-print.is-missing {
+  display: flex; align-items: center; justify-content: center;
+  background: radial-gradient(ellipse at 50% 45%, #5d4c37 0%, #2a2219 60%, #17120d 100%);
+}
+.photo-print.is-missing::after {
+  content: "사진 원본 없음"; font-size: 12.5px; letter-spacing: .3em; text-indent: .3em;
+  color: rgba(236,228,210,.6); border: 1px solid rgba(236,228,210,.25); padding: 6px 16px;
+}
+.t-photo .body {
+  font-family: var(--typewriter); font-size: 13.5px; color: #4a3d2a;
+  text-align: center; margin-top: 16px; line-height: 1.8;
+}
+.t-photo .body p { margin: 0 0 4px; }
+
+/* ---------- 성냥갑 · 물건 ---------- */
+.doc.t-matchbook {
   background: #e8481c; color: #1a0d06; text-align: center;
-  padding: 46px 40px 0; max-width: 460px; margin: 0 auto;
+  padding: 46px 40px 0; max-width: 460px;
   background-image: radial-gradient(ellipse at 50% 30%, rgba(255,255,255,.10), transparent 65%);
 }
-.doc.matchbook::before {
+.doc.t-matchbook::before {
   content: ""; position: absolute; inset: 10px; border: 1px solid rgba(26,13,6,.35);
   pointer-events: none;
 }
-.doc.matchbook h2 {
+.t-matchbook .doc-title {
   font-family: var(--myeongjo); font-weight: 800; font-size: clamp(24px, 5.5vw, 34px);
   color: #12100c; margin: 0 0 4px; letter-spacing: -.01em;
 }
-.doc.matchbook .doc-meta { display: none; }
-.doc.matchbook .body {
+.t-matchbook .body {
   font-family: var(--myeongjo); font-weight: 700; font-size: clamp(16px, 3.4vw, 21px);
   color: #12100c;
 }
-.doc.matchbook .body p { margin: 0; }
+.t-matchbook .body p { margin: 0; }
 .mb-band {
-  margin: 22px -40px 0; padding: 13px 20px; background: #f3ece0;
+  margin: 22px -40px 0; padding: 13px 20px 0; background: #f3ece0;
   border-top: 1px solid rgba(26,13,6,.3); position: relative;
 }
 .mb-band span {
@@ -563,41 +656,27 @@ body.modal-open { overflow: hidden; }
 }
 .mb-band::after {
   content: ""; display: block; height: 34px; background: #5a3324;
-  margin: 13px -20px -13px; border-top: 1px solid rgba(26,13,6,.35);
+  margin: 13px -20px 0; border-top: 1px solid rgba(26,13,6,.35);
   box-shadow: inset 0 0 26px rgba(0,0,0,.45);
 }
-.doc.matchbook .obj-note { margin: 22px 0 0; }
-.doc.matchbook .doc-foot { text-align: left; }
 
-.obj-note {
-  font-size: 13px; color: #5b4a30; line-height: 1.8;
-  border-top: 1px dashed rgba(60,40,10,.35); padding-top: 12px; margin: 22px 0 0;
-  text-align: left;
+/* ---------- 정보 칸: 생김새 · 인물 · 지명 · 태그 ---------- */
+.doc-info {
+  margin: 18px 0 0; padding: 16px 22px 14px;
+  background: rgba(20,17,13,.9); border: 1px solid var(--gold-dim);
 }
+.info-row { display: flex; gap: 14px; align-items: baseline; padding: 8px 0; }
+.info-row + .info-row { border-top: 1px solid rgba(201,162,39,.1); }
+.info-row .lbl {
+  flex: none; width: 48px; font-size: 11px; letter-spacing: .2em; color: var(--gold-soft);
+}
+.info-row .chips { display: flex; flex-wrap: wrap; gap: 7px; }
+.info-row .obj-note { margin: 0; font-size: 14px; line-height: 1.85; color: #cbbd9f; }
+.info-actions { display: flex; justify-content: flex-end; margin-top: 8px; }
+/* 작은 물건 아래에서는 정보 칸도 같은 폭으로 */
+.doc.is-small ~ .doc-info { max-width: 600px; margin-left: auto; margin-right: auto; }
 
-.doc .stamp {
-  position: absolute; top: 22px; right: 26px; transform: rotate(-11deg);
-  border: 3px double var(--oxblood); color: var(--oxblood); opacity: .55;
-  font-family: var(--display); font-size: 13px; letter-spacing: .18em;
-  padding: 5px 12px; pointer-events: none;
-}
-
-.doc-figure { margin: 0 0 22px; }
-.doc-figure img { width: 100%; display: block; border: 1px solid rgba(60,40,10,.3); }
-.doc-foot {
-  margin-top: 26px; padding-top: 14px; border-top: 1px solid rgba(60,40,10,.25);
-}
-.foot-row {
-  display: flex; flex-wrap: wrap; gap: 7px; align-items: center; margin-bottom: 8px;
-}
-.foot-row.end { margin: 14px 0 0; justify-content: flex-end; }
-.doc-foot .lbl {
-  font-size: 11px; letter-spacing: .16em; color: #6d5c40;
-  min-width: 34px; margin-right: 4px;
-}
-.doc-foot .tagpill { color: #5b4a30; border-color: rgba(60,40,10,.3); }
-
-/* 눌러서 이동하는 칩 */
+/* 눌러서 이동하는 칩 (밝은 종이 위 기본형 — 인물 기록에서 씀) */
 .linkchip {
   font-family: var(--serif-ko); font-size: 12.5px; cursor: pointer;
   background: rgba(60,40,10,.05); border: 1px solid rgba(60,40,10,.35);
@@ -606,12 +685,25 @@ body.modal-open { overflow: hidden; }
 .linkchip:hover { background: #3d2f1c; color: var(--paper-warm); border-color: #3d2f1c; }
 .linkchip::before { content: "▸ "; opacity: .55; }
 .linkchip.place::before { content: "◇ "; }
+/* 어두운 정보 칸 위 */
+.doc-info .linkchip { background: rgba(201,162,39,.06); border-color: var(--gold-dim); color: var(--paper); }
+.doc-info .linkchip:hover { background: var(--gold); border-color: var(--gold); color: #1a1408; }
 
 .btn-print {
-  background: none; border: 1px solid rgba(60,40,10,.4);
-  font-family: var(--serif-ko); font-size: 12px; padding: 5px 14px; cursor: pointer; color: #3d2f1c;
+  background: none; border: 1px solid var(--gold-dim); color: var(--gold);
+  font-family: var(--serif-ko); font-size: 12px; padding: 5px 14px; cursor: pointer;
+  letter-spacing: .06em; transition: .16s;
 }
-.btn-print:hover { background: rgba(60,40,10,.08); }
+.btn-print:hover { background: rgba(201,162,39,.14); border-color: var(--gold); }
+
+@media (max-width: 640px) {
+  .doc-cap { padding: 0 40px; }
+  .doc.t-card { aspect-ratio: auto; padding: 44px 26px 38px; }
+  .doc.t-flyer { padding: 42px 28px 36px; }
+  .doc.t-note { --margin: 30px; padding: calc(var(--rule) * 2) 18px var(--rule) 46px; font-size: 21px; }
+  .doc.t-photo { padding: 12px 12px 16px; }
+  .info-row { flex-direction: column; gap: 6px; }
+}
 
 /* ---------- 인물 기록 ---------- */
 .doc.person-file { background: var(--paper-warm); }
@@ -648,7 +740,7 @@ body.modal-open { overflow: hidden; }
   font-family: var(--myeongjo); font-size: 13px; letter-spacing: .18em; color: #6d5c40;
   border-bottom: 1px solid rgba(60,40,10,.3); padding-bottom: 6px; margin: 0 0 12px;
 }
-.pf-refs { list-style: none; margin: 0; padding: 0; }
+.doc .pf-refs { list-style: none; margin: 0; padding: 0; }
 .pf-refs li {
   display: flex; justify-content: space-between; align-items: baseline; gap: 14px;
   padding: 9px 12px; cursor: pointer; border: 1px solid transparent;
@@ -702,25 +794,22 @@ body.modal-open { overflow: hidden; }
   main { padding: 12px 16px 50px; }
 }
 
-/* ---------- 인쇄: 플레이어에게 나눠 줄 핸드아웃 ---------- */
+/* ---------- 인쇄: 플레이어에게 나눠 줄 핸드아웃 ----------
+   문서를 열어 둔 상태에서 인쇄하면 실물만 나간다 (캡션 · 정보 칸 · 키퍼 메모 제외). */
 @media print {
   body { background: #fff; }
-  .grain, .masthead, .tabs, .toolbar, .colophon, .modal-close,
-  .btn-print, .doc-foot, .keeper-box { display: none !important; }
+  .grain, .masthead, .tabs, .toolbar, .colophon, .modal-close, .modal-back,
+  .doc-cap, .doc-info, .side-lbl, .keeper-box { display: none !important; }
 
-  .modal-back { display: none !important; }
-
-  /* 문서를 열어 둔 상태에서 인쇄하면 그 문서만 */
   body.print-doc main { display: none; }
   body.print-doc .overlay {
-    position: static; background: none; padding: 0; backdrop-filter: none;
+    position: static; background: none; padding: 0;
     display: block; overflow: visible;
   }
   /* 아니면 지금 보고 있는 화면을 인쇄 */
   body:not(.print-doc) .overlay { display: none !important; }
 
   .modal { width: 100%; animation: none; }
-  .doc { box-shadow: none; padding: 0; }
-  .doc.news .body { column-count: 2; }
-  .doc.card::before { inset: 0; }
+  .doc { box-shadow: none; break-inside: avoid; }
+  .doc.t-news .body { column-count: 2; }
 }
