@@ -9,7 +9,7 @@
 (function () {
   "use strict";
 
-  var APP_VERSION = "10";     /* index.html / keeper.html 의 ?v= 값과 맞춘다 */
+  var APP_VERSION = "11";     /* index.html / keeper.html 의 ?v= 값과 맞춘다 */
 
   var D = window.MASKS_DATA;
   if (!D) { document.getElementById("main").innerHTML = "<p class='empty'>data/handouts.js 를 불러오지 못했습니다.</p>"; return; }
@@ -315,6 +315,60 @@
         : emptyMsg());
   }
 
+  /* ---------------- GM 노트 (숨김) ----------------
+     '엘리어스 장서' 탭을 13번 연달아 누르면 data/gm.js 를 그때 불러와 연다.
+     index.html 에는 걸려 있지 않다. 숨김일 뿐 잠금은 아니다. */
+
+  var GM_TAPS = 13, GM_GAP = 1500;
+  var gmTaps = 0, gmLast = 0;
+
+  function countGmTap(view) {
+    var now = Date.now();
+    if (view !== "library" || now - gmLast > GM_GAP) gmTaps = 0;
+    gmLast = now;
+    if (view !== "library") return false;
+    gmTaps += 1;
+    if (gmTaps < GM_TAPS) return false;
+    gmTaps = 0;
+    openGm();
+    return true;
+  }
+
+  function openGm() {
+    if (window.MASKS_GM) { state.view = "gm"; render(); window.scrollTo(0, 0); return; }
+    var s = document.createElement("script");
+    s.src = "data/gm.js?v=" + APP_VERSION;
+    s.onload = function () { openGm(); };
+    document.head.appendChild(s);
+  }
+
+  function renderGm() {
+    var el = document.getElementById("view-gm");
+    if (!el) {
+      el = document.createElement("section");
+      el.id = "view-gm"; el.className = "view";
+      document.getElementById("view-library").insertAdjacentElement("afterend", el);
+    }
+    var G = window.MASKS_GM;
+    if (!G) { el.innerHTML = ""; return; }
+    el.innerHTML =
+      "<div class='gm'>" +
+        "<div class='chapter-head'><h2>" + esc(G.title) + "</h2>" +
+        "<span class='en'>FOR THE GM ONLY</span>" +
+        "<button class='gm-exit' type='button'>닫기</button></div>" +
+        "<div class='gm-warn'>" + esc(G.warning) + "</div>" +
+        "<nav class='gm-toc'>" + G.sections.map(function (sec) {
+          return "<a href='#' data-gm-jump='" + esc(sec.id) + "'>" + esc(sec.title) + "</a>";
+        }).join("") + "</nav>" +
+        G.sections.map(function (sec) {
+          return "<section class='gm-sec' id='gm-" + esc(sec.id) + "'>" +
+            "<header><span class='en'>" + esc(sec.en || "") + "</span><h3 class='gm-h'>" + esc(sec.title) + "</h3></header>" +
+            "<div class='gm-body'>" + fmt(sec.body) + "</div></section>";
+        }).join("") +
+        (G.updated ? "<p class='gm-foot'>마지막 정리 " + esc(G.updated) + "</p>" : "") +
+      "</div>";
+  }
+
   /* ---------------- 지도 ---------------- */
 
   function renderMaps() {
@@ -588,7 +642,7 @@
 
   function render() {
     renderFilters();
-    ["archive", "timeline", "maps", "people", "library"].forEach(function (v) {
+    ["archive", "timeline", "maps", "people", "library", "gm"].forEach(function (v) {
       var el = document.getElementById("view-" + v);
       if (el) el.hidden = (v !== state.view);
     });
@@ -596,10 +650,12 @@
       t.classList.toggle("is-active", t.dataset.view === state.view);
     });
     document.body.classList.toggle("on-maps", state.view === "maps");
+    document.body.classList.toggle("on-gm", state.view === "gm");
     if (state.view === "archive") renderArchive();
     else if (state.view === "timeline") renderTimeline();
     else if (state.view === "maps") renderMaps();
     else if (state.view === "people") renderPeople();
+    else if (state.view === "gm") renderGm();
     else renderLibrary();
   }
 
@@ -608,6 +664,7 @@
   document.getElementById("tabs").addEventListener("click", function (e) {
     var b = e.target.closest(".tab");
     if (!b) return;
+    if (countGmTap(b.dataset.view)) return;
     state.view = b.dataset.view;
     render();
   });
@@ -635,6 +692,14 @@
 
   document.addEventListener("click", function (e) {
     if (e.target.closest(".btn-print")) { window.print(); return; }
+    if (e.target.closest(".gm-exit")) { state.view = "library"; render(); window.scrollTo(0, 0); return; }
+    var jump = e.target.closest("[data-gm-jump]");
+    if (jump) {
+      e.preventDefault();
+      var tgt = document.getElementById("gm-" + jump.dataset.gmJump);
+      if (tgt) tgt.scrollIntoView({ behavior: "smooth", block: "start" });
+      return;
+    }
     if (e.target.closest("#modal-back")) { modalBack(); return; }
     if (e.target.closest("#modal-close") || e.target.id === "overlay") { closeDoc(); return; }
 
