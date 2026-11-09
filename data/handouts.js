@@ -595,7 +595,7 @@ Name geschützt · Nom déposé`
 
     { name: "조나 켄싱턴", en: "Jonah Kensington", role: "프로스페로 하우스 사장 겸 편집자", chapter: "us",
       status: "alive", statusText: "생존",
-      desc: "뉴욕의 출판인. 엘리어스의 책을 모두 편집했으며 그의 좋은 친구다." },
+      desc: "뉴욕의 출판인. 엘리어스의 책을 모두 편집했으며 그의 좋은 친구다. 들은 바로는 출판사를 그만두고, 아서 에머슨이 속한 사교도 대응 집단에 들어가 있다고 한다." },
 
     { name: "빅토리아 포스트", en: "Mrs. Victoria Post", role: "에리카 칼라일의 동행", chapter: "us",
       status: "alive", statusText: "생존",
@@ -633,9 +633,9 @@ Name geschützt · Nom déposé`
       status: "unknown", statusText: "미상",
       desc: "1924년 11월 7일 엘리어스에게 답장을 보냈다. 엘리어스가 문의한 책은 더 이상 장서에 없지만 찾는 내용은 다른 책들에서 확인할 수 있을 것이라며, 도착하면 연락 달라고 했다." },
 
-    { name: "아서 에머슨", en: "Arthur Emerson", role: "수녀원에서 만난 인물", chapter: "us",
+    { name: "아서 에머슨", en: "Arthur Emerson", role: "사교도 대응 집단 (전해 들음)", chapter: "us",
       status: "alive", statusText: "생존",
-      desc: "수녀원에서 직접 만났다. 짙은 머리에 수염을 기른 중년 남성으로, 양복에 넥타이 차림이었다. 성이 에머슨 무역 명함과 뉴욕 지도 10번 지점의 '에머슨'과 같지만, 둘이 관계가 있는지는 아직 확인하지 않았다." },
+      desc: "수녀원에서 직접 만났다. 짙은 머리에 수염을 기른 중년 남성으로, 양복에 넥타이 차림이었다. 성이 에머슨 무역 명함과 뉴욕 지도 10번 지점의 '에머슨'과 같지만, 둘이 관계가 있는지는 아직 확인하지 않았다. 들은 바로는 사교도를 상대하는 집단의 사람이며, 엘리어스의 편집자였던 조나 켄싱턴도 같은 집단이라고 한다." },
 
     { name: "음웨루", en: "M'Weru", role: "로저 칼라일이 따르던 여자", chapter: "us",
       status: "unknown", statusText: "미상",
