@@ -9,3 +9,6 @@ data/keeper-notes.js
 node_modules/
 README.md
 data/README.md
+
+# Vercel 토큰 — 절대 올리지 않음
+.env*
