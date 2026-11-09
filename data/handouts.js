@@ -617,9 +617,9 @@ Name geschützt · Nom déposé`
       status: "unknown", statusText: "싱싱 교도소 수감 · 사형 대기",
       desc: "할렘 현지 주민. 작년 10월 할렘 살인의 범인으로 유죄 판결을 받았다." },
 
-    { name: "사일러스 은콰네", en: "Silas N'Kwane", role: "미상", chapter: "us",
+    { name: "사일러스 은콰네", en: "Silas N'Kwane", role: "사교도 지부장 (전해 들음)", chapter: "us",
       status: "unknown", statusText: "미상",
-      desc: "에머슨 무역(웨스트 47번가 648번지)의 명함 뒷면에 보라색 잉크로 손으로 적혀 있던 이름. 그 밖에 알려진 것이 없다." },
+      desc: "에머슨 무역(웨스트 47번가 648번지)의 명함 뒷면에 보라색 잉크로 손으로 적혀 있던 이름. 들은 바로는 뉴욕 사교도 지부의 지부장이라고 한다." },
 
     { name: "앤서니 콜즈", en: "Prof. Anthony Cowles", role: "인류학 교수 · 강연자", chapter: "us",
       status: "alive", statusText: "생존",
